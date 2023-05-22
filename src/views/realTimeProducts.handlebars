@@ -1,0 +1,35 @@
+<!-- realTimeProducts.handlebars -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lista de productos en tiempo real</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+
+    socket.on('productosActualizados', function (productos) {
+      // Actualiza la lista de productos en la página
+      var productList = document.getElementById('productList');
+      productList.innerHTML = '';
+      productos.forEach(function (producto) {
+        var listItem = document.createElement('li');
+        listItem.textContent = producto;
+        productList.appendChild(listItem);
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Lista de productos en tiempo real:</h1>
+  <ul id="productList">
+    {{#each productos}}
+      <li>{{this}}</li>
+    {{/each}}
+  </ul>
+  <h2>Agregar producto:</h2>
+  <form action="/realtimeproducts" method="POST">
+    <input type="text" name="producto" placeholder="Nombre del producto" required>
+    <button type="submit">Agregar</button>
+  </form>
+</body>
+</html>
