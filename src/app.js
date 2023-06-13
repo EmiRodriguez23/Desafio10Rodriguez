@@ -1,4 +1,4 @@
-// Importa los paquetes necesarios
+/* // Importa los paquetes necesarios
 const express = require('express');
 const exphbs = require('express-handlebars');
 const http = require('http');
@@ -57,3 +57,25 @@ function obtenerProductos() {
   return ['Producto 1', 'Producto 2', 'Producto 3'];
 }
 
+ */
+
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const path = require('path');
+
+const app = express();
+
+// Conexión a la base de datos de MongoDB
+mongoose.connect('<URL_DE_CONEXIÓN>', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Resto del código...
+
+// Iniciar el servidor
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Servidor iniciado en el puerto ${port}`);
+});
