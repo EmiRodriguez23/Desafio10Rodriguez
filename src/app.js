@@ -59,7 +59,7 @@ function obtenerProductos() {
 
  */
 
-const express = require('express');
+/* const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -67,7 +67,7 @@ const path = require('path');
 const app = express();
 
 // Conexión a la base de datos de MongoDB
-mongoose.connect('<URL_DE_CONEXIÓN>', {
+mongoose.connect('', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -79,3 +79,67 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Servidor iniciado en el puerto ${port}`);
 });
+ */
+// Importar los módulos necesarios
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+
+// Crear la instancia de la aplicación Express
+const app = express();
+
+// Configurar body-parser para procesar datos del formulario
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Configurar la sesión
+app.use(session({
+  secret: 'miClaveSecreta',
+  resave: false,
+  saveUninitialized: false
+}));
+
+// Definir las vistas y rutas
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/views/login.html');
+});
+
+app.get('/productos', (req, res) => {
+  if (req.session.user) {
+    res.send(`Bienvenido/a ${req.session.user.name} (${req.session.user.role}) a la vista de productos.`);
+  } else {
+    res.redirect('/');
+  }
+});
+
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  // Verificar las credenciales del usuario
+  if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
+    req.session.user = {
+      email: email,
+      name: 'Admin Coder',
+      role: 'admin'
+    };
+  } else {
+    req.session.user = {
+      email: email,
+      name: 'Usuario',
+      role: 'usuario'
+    };
+  }
+
+  res.redirect('/productos');
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+});
+
+// Iniciar el servidor
+app.listen(3000, () => {
+  console.log('Servidor iniciado en el puerto 3000');
+});
+
